@@ -25,6 +25,7 @@ function areAllAnimationsCompleted() {
 }
 
 function showColorMapOverlay() {
+  console.log('showColorMapOverlay called');
   if (!state.colorMapShown && colorMapOverlay && areAllPersonasSelected() && areAllAnimationsCompleted()) {
     state.colorMapShown = true;
     colorMapOverlay.style.display = "block";
@@ -36,6 +37,7 @@ function showColorMapOverlay() {
 }
 
 function hideColorMapOverlay() {
+  console.log('hideColorMapOverlay called');
   if (state.colorMapShown && colorMapOverlay) {
     state.colorMapShown = false;
     colorMapOverlay.classList.remove("visible");
@@ -44,6 +46,7 @@ function hideColorMapOverlay() {
 }
 
 function updatePersonaAssetsVisibility(selectedPersonas, topPersona) {
+  console.log('updatePersonaAssetsVisibility', selectedPersonas, topPersona);
   const activePersonas = new Set(selectedPersonas);
 
   personaMapAssets.forEach((asset) => {
@@ -122,6 +125,7 @@ function updatePersonaAssetsVisibility(selectedPersonas, topPersona) {
 }
 
 function updatePlayButtonZIndexes(selectedPersonas, topPersona) {
+  console.log('updatePlayButtonZIndexes', selectedPersonas, topPersona);
   const activePersonas = new Set(selectedPersonas);
 
   personaMapAssets.forEach((asset) => {
@@ -135,6 +139,7 @@ function updatePlayButtonZIndexes(selectedPersonas, topPersona) {
 }
 
 function updateSelectedButton(personaToSelect) {
+  console.log('updateSelectedButton', personaToSelect);
   const targetButton = document.querySelector(
     `.persona-button[data-persona="${personaToSelect}"]`
   );
@@ -151,7 +156,8 @@ function updateSelectedButton(personaToSelect) {
     }
   }
 
-  updatePersonaAssetsVisibility(state.selectedPersonas, state.topPersona);
+    console.log('State after selection', state.selectedPersonas, state.topPersona);
+    updatePersonaAssetsVisibility(state.selectedPersonas, state.topPersona);
 }
 
 
@@ -190,6 +196,7 @@ buttons.forEach((btn) => {
 });
 
 function checkButtonAvailability() {
+  console.log('checkButtonAvailability called');
   const now = new Date();
 
   buttons.forEach((btn) => {
