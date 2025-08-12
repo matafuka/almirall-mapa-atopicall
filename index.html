@@ -1,0 +1,860 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #f6f7fb;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container-mapa {
+    height: auto;
+    width: 100%;
+    min-width: 375px;
+    justify-content: start;
+    flex-direction: column;
+    max-width: 1200px;
+  }
+
+  .left-column {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+
+  .right-column {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .right-column img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .persona-sel {
+    height: 25%;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #dde2e9;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 13/10;
+  }
+
+  .persona-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 24px 0px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border 0.15s, background 0.15s;
+    background: transparent;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .persona-button img {
+    object-fit: contain;
+  }
+
+  .persona-image-container {
+    position: relative;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background-color: var(--persona-hover-color-faded, transparent);
+    border: 3px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    box-shadow: 0 0 0 3px var(--persona-active-color, #ccc);
+  }
+
+  .persona-button:hover .persona-image-container {
+    background-color: var(--persona-hover-color-faded, transparent);
+  }
+
+  .persona-image-container img {
+    width: 90%;
+    height: 90%;
+    border-radius: 0;
+    object-fit: contain;
+  }
+
+  .persona-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 1.5rem;
+  }
+
+  .persona-label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: var(--persona-label-color, #002754);
+    transition: color 0.15s;
+    white-space: nowrap;
+  }
+
+  .persona-icon {
+    width: 1.7rem;
+    padding-top: 2.5%;
+    padding-left: 0.7rem;
+    color: var(--persona-icon-color, #002754);
+  }
+
+  /* Disabled state styling */
+  .persona-button.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .persona-button.disabled::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: inherit;
+    z-index: 10;
+  }
+
+  .persona-button.disabled .persona-image-container {
+    opacity: 0.6;
+    box-shadow: 0 0 0 3px rgba(204, 204, 204, 0.6);
+  }
+
+  .persona-button.disabled .persona-image-container img {
+    opacity: 0.7;
+    filter: saturate(0.3) brightness(1.1);
+  }
+
+  .persona-button.disabled .persona-label {
+    opacity: 0.6;
+  }
+
+  .persona-button.disabled:hover {
+    border-color: transparent !important;
+    background: transparent !important;
+  }
+
+  .persona-button.disabled:hover .persona-image-container {
+    background-color: transparent !important;
+  }
+
+  /* Responsive breakpoints - gradual adjustments */
+  @media (max-width: 1070px) {
+    .persona-button {
+      padding: 10px 0px;
+    }
+  }
+
+  @media (max-width: 1030px) {
+    .left-column {
+      gap: 3px;
+    }
+
+    .persona-image-container {
+      width: 96px;
+      height: 96px;
+    }
+
+    .persona-label-row {
+      font-size: 1.4rem;
+    }
+
+    .persona-button {
+      padding: 10px 0px;
+    }
+  }
+
+  @media (max-width: 950px) {
+    .left-column {
+      gap: 3px;
+    }
+
+    .persona-image-container {
+      width: 84px;
+      height: 84px;
+    }
+
+    .persona-label-row {
+      font-size: 1.3rem;
+    }
+
+    .persona-button {
+      padding: 18px 0px;
+    }
+  }
+
+  @media (max-width: 1070px) {
+    .persona-button {
+      padding: 10px 0px;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .left-column {
+      gap: 2px;
+    }
+
+    .persona-image-container {
+      width: 72px;
+      height: 72px;
+    }
+
+    .persona-label-row {
+      font-size: 1.2rem;
+    }
+
+    .persona-button {
+      padding: 16px 0px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .persona-button {
+      padding: 10px 0px;
+    }
+  }
+
+  @media (max-width: 690px) {
+    .left-column {
+      gap: 2px;
+    }
+
+    .persona-image-container {
+      width: 60px;
+      height: 60px;
+    }
+
+    .persona-label-row {
+      font-size: 1.1rem;
+    }
+
+    .persona-button {
+      padding: 10px 0px;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .left-column {
+      gap: 2px;
+    }
+
+    .persona-image-container {
+      width: 50px;
+      height: 50px;
+    }
+
+    .persona-label-row {
+      font-size: 1rem;
+    }
+
+    .persona-button {
+      padding: 12px 0px;
+    }
+  }
+
+  @media (max-width: 575px) {
+    .left-column {
+      gap: 1px;
+    }
+
+    .persona-image-container {
+      width: 42px;
+      height: 42px;
+    }
+
+    .persona-label-row {
+      font-size: 0.9rem;
+    }
+
+    .persona-button {
+      padding: 10px 0px;
+    }
+  }
+
+  @media (max-width: 490px) {
+    .left-column {
+      gap: 1px;
+    }
+
+    .persona-image-container {
+      width: 42px;
+      height: 42px;
+    }
+
+    .persona-label-row {
+      font-size: 0.8rem;
+    }
+
+    .persona-button {
+      padding: 8px 0px;
+    }
+  }
+
+  @media (max-width: 490px) {
+    .left-column {
+      gap: 1px;
+    }
+
+    .persona-image-container {
+      width: 3px;
+      height: 3px;
+    }
+
+    .persona-label-row {
+      font-size: 0.8rem;
+    }
+
+    .persona-button {
+      padding: 4px 0px;
+    }
+  }
+
+  .persona-button.lucia {
+    --persona-label-color: #002754;
+    --persona-icon-color: #002754;
+    --persona-hover-color: #00f0be;
+    --persona-active-color: #00f0be;
+    --persona-hover-color-faded: #ddf6f5;
+    --persona-active-color-faded: #ddf6f5;
+  }
+
+  .persona-button.lucia:hover {
+    border-color: #00f0be;
+    background-color: var(--persona-hover-color-faded, transparent);
+  }
+
+  .persona-button.lucia.pressed,
+  .persona-button.lucia.selected {
+    background: #00f0be;
+    border-color: #00f0be;
+    --persona-label-color: #002754;
+    --persona-icon-color: #002754;
+  }
+
+  .persona-button.lucia.selected .persona-image-container,
+  .persona-button.lucia.pressed .persona-image-container {
+    background-color: var(--persona-hover-color-faded, #ddf6f5) !important;
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px var(--persona-active-color, #ccc);
+  }
+
+  .persona-button.sergio {
+    --persona-label-color: #002754;
+    --persona-icon-color: #002754;
+    --persona-hover-color: #002855;
+    --persona-active-color: #002855;
+    --persona-hover-color-faded: #dde2ea;
+    --persona-active-color-faded: #dde2ea;
+  }
+
+  .persona-button.sergio:hover {
+    border-color: #002855;
+    background-color: var(--persona-hover-color-faded, transparent);
+  }
+
+  .persona-button.sergio.pressed,
+  .persona-button.sergio.selected {
+    background: #002855;
+    border-color: #002855;
+    --persona-label-color: #fff;
+    --persona-icon-color: #fff;
+  }
+
+  .persona-button.sergio.selected .persona-image-container,
+  .persona-button.sergio.pressed .persona-image-container {
+    background-color: var(--persona-hover-color-faded, #dde2ea) !important;
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px var(--persona-active-color, #ccc);
+  }
+
+  .persona-button.carina {
+    --persona-label-color: #82368c;
+    --persona-icon-color: #82368c;
+    --persona-hover-color: #82368c;
+    --persona-active-color: #82368c;
+    --persona-hover-color-faded: #eae4f0;
+    --persona-active-color-faded: #eae4f0;
+  }
+
+  .persona-button.carina:hover {
+    border-color: #82368c;
+    background-color: var(--persona-hover-color-faded, transparent);
+  }
+
+  .persona-button.carina.pressed,
+  .persona-button.carina.selected {
+    background: #82368c;
+    border-color: #82368c;
+    --persona-label-color: #fff;
+    --persona-icon-color: #fff;
+  }
+
+  .persona-button.carina.selected .persona-image-container,
+  .persona-button.carina.pressed .persona-image-container {
+    background-color: var(--persona-hover-color-faded, #eae4f0) !important;
+    border: 3px solid rgb(255, 255, 255);
+    box-shadow: 0 0 0 3px var(--persona-active-color, #ccc);
+  }
+
+  .persona-button.marta {
+    --persona-label-color: #002754;
+    --persona-icon-color: #002754;
+    --persona-hover-color: #ffde00;
+    --persona-active-color: #ffde00;
+    --persona-hover-color-faded: #f7f4e2;
+    --persona-active-color-faded: #f7f4e2;
+  }
+
+  .persona-button.marta:hover {
+    border-color: #ffde00;
+    background-color: var(--persona-hover-color-faded, transparent);
+  }
+
+  .persona-button.marta.pressed,
+  .persona-button.marta.selected {
+    background: #ffde00;
+    border-color: #ffde00;
+    --persona-label-color: #002754;
+    --persona-icon-color: #002754;
+  }
+
+  .persona-button.marta.selected .persona-image-container,
+  .persona-button.marta.pressed .persona-image-container {
+    background-color: var(--persona-hover-color-faded, #f7f4e2) !important;
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px var(--persona-active-color, #ccc);
+  }
+
+  .map-circle-overlay {
+    position: absolute;
+    top: 57%;
+    left: 52%;
+    z-index: 50;
+    transform: translate(-54%, -50%);
+    width: 12% !important;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .map-circle-overlay.visible {
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 3s;
+  }
+
+  .map-circle-overlay:hover {
+    transform: translate(-54%, -50%) scale(1.1);
+  }
+
+  .map-circle-overlay:active {
+    transform: translate(-54%, -50%) scale(0.95);
+  }
+
+  .map-circle-overlay img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .map-color-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 25;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    display: none;
+    transition: none;
+  }
+
+  .map-color-overlay.visible {
+    display: block;
+    animation: overlayFadeInStrong 3s linear forwards;
+  }
+
+  @keyframes overlayFadeInStrong {
+    0% {
+      opacity: 0;
+    }
+
+    66% {
+      opacity: 0.18;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .lucia-line {
+    position: absolute;
+    top: 23.5%;
+    left: 17.5%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    width: 20%;
+  }
+
+  .sergio-line {
+    position: absolute;
+    top: 40.5%;
+    left: 4%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    width: 20%;
+  }
+
+  .carina-line {
+    position: absolute;
+    top: 57%;
+    left: 6%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    width: 20%;
+  }
+
+  .marta-line {
+    position: absolute;
+    top: 58.2%;
+    left: 41.5%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    width: 20%;
+  }
+
+  .lucia-line svg {
+    width: 139%;
+    height: auto;
+  }
+
+  .sergio-line svg {
+    width: 184%;
+    height: auto;
+  }
+
+  .carina-line svg {
+    width: 170%;
+    height: auto;
+  }
+
+  .marta-line svg {
+    width: 24%;
+    height: auto;
+  }
+
+  .lucia-line svg,
+  .sergio-line svg,
+  .carina-line svg,
+  .marta-line svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .lucia-line .base path,
+  .sergio-line .base path,
+  .carina-line .base path,
+  .marta-line .base path {
+    fill: white;
+  }
+
+  .lucia-line .top path {
+    fill: #00f0be;
+  }
+
+  .sergio-line .top path {
+    fill: #002855;
+  }
+
+  .carina-line .top path {
+    fill: #82368c;
+  }
+
+  .marta-line .top path {
+    fill: #ffde00;
+  }
+
+  .lucia-line .top path,
+  .sergio-line .top path {
+    mask: linear-gradient(135deg,
+        black 0%,
+        black 50%,
+        transparent 50%,
+        transparent 100%);
+    mask-size: 200% 200%;
+    mask-position: 100% 100%;
+  }
+
+  .carina-line .top path {
+    mask: linear-gradient(90deg,
+        black 0%,
+        black 50%,
+        transparent 50%,
+        transparent 100%);
+    mask-size: 200% 100%;
+    mask-position: 100% 0;
+  }
+
+  .marta-line .top path {
+    mask: linear-gradient(-45deg,
+        black 0%,
+        black 50%,
+        transparent 50%,
+        transparent 100%);
+    mask-size: 200% 200%;
+    mask-position: 0% 0%;
+  }
+
+  .lucia-line.animate .top path,
+  .sergio-line.animate .top path {
+    animation: revealDiagonal 3.5s ease-in-out forwards;
+  }
+
+  .carina-line.animate .top path {
+    animation: revealHorizontal 3.5s ease-in-out forwards;
+  }
+
+  .marta-line.animate .top path {
+    animation: revealDiagonalReverse 3.5s ease-in-out forwards;
+  }
+
+  @keyframes revealDiagonal {
+    0% {
+      mask-position: 100% 100%;
+    }
+
+    100% {
+      mask-position: 0% 0%;
+    }
+  }
+
+  @keyframes revealHorizontal {
+    0% {
+      mask-position: 100% 0;
+    }
+
+    100% {
+      mask-position: 0% 0;
+    }
+  }
+
+  @keyframes revealDiagonalReverse {
+    0% {
+      mask-position: 0% 0%;
+    }
+
+    100% {
+      mask-position: 100% 100%;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .persona-map-asset {
+    display: none;
+  }
+
+  .persona-lucia {
+    position: absolute;
+    top: 21%;
+    left: 23%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    height: 8.5% !important;
+  }
+
+  .persona-sergio {
+    position: absolute;
+    top: 38%;
+    left: 7%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    height: 8.5% !important;
+  }
+
+  .persona-carina {
+    position: absolute;
+    top: 65.5%;
+    left: 13.5%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    height: 8.5% !important;
+  }
+
+  .persona-marta {
+    position: absolute;
+    top: 85%;
+    left: 56%;
+    transform: translate(50%, 0);
+    z-index: 25;
+    height: 8.5% !important;
+  }
+</style>
+
+<div class="container-mapa">
+  <div class="left-column">
+    <div class="persona-sel">
+      <!-- TODO adapt the date ant time to the desiered activation date on data-enable-after -->
+      <div class="persona-button lucia" data-persona="lucia" data-enable-after="2025-07-01T09:00:00+02:00">
+        <div class="persona-image-container">
+          <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/lucia-icon-card.png" alt="lucia" />
+        </div>
+        <div class="persona-label-row">
+          <span class="persona-label">Lucía's Path</span>
+        </div>
+      </div>
+    </div>
+    <div class="persona-sel">
+      <!-- TODO adapt the date ant time to the desiered activation date on data-enable-after -->
+      <div class="persona-button sergio" data-persona="sergio" data-enable-after="2025-07-05T14:30:00+02:00">
+        <div class="persona-image-container">
+          <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/sergio-icon-card.png" alt="sergio" />
+        </div>
+        <div class="persona-label-row">
+          <span class="persona-label">Sergio's Path</span>
+        </div>
+      </div>
+    </div>
+    <div class="persona-sel">
+      <!-- TODO adapt the date ant time to the desiered activation date on data-enable-after -->
+      <div class="persona-button carina" data-persona="carina" data-enable-after="2025-07-10T11:15:00+02:00">
+        <div class="persona-image-container">
+          <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/carina-icon-card.png" alt="carina" />
+        </div>
+        <div class="persona-label-row">
+          <span class="persona-label">Carina's Path</span>
+        </div>
+      </div>
+    </div>
+    <div class="persona-sel">
+      <!-- TODO adapt the date ant time to the desiered activation date on data-enable-after -->
+      <div class="persona-button marta" data-persona="marta" data-enable-after="2025-07-15T16:45:00+02:00">
+        <div class="persona-image-container">
+          <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/marta-icon-card.png" alt="marta" />
+        </div>
+        <div class="persona-label-row">
+          <span class="persona-label">Marta's Path</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right-column">
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/map-default.jpg" alt="Mapa" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/lucia-map.png" class="map-color-overlay persona-map-asset" data-persona="lucia"
+      alt="zona de influencia de lucia" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/sergio-map.png" class="map-color-overlay persona-map-asset" data-persona="sergio"
+      alt="zona de influencia de sergio" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/carina-map.png" class="map-color-overlay persona-map-asset" data-persona="carina"
+      alt="zona de influencia de carina" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/marta-map.png" class="map-color-overlay persona-map-asset" data-persona="marta"
+      alt="zona de influencia de marta" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/color-map.png" class="map-color-overlay color-map-overlay" alt="mapa completo de todas las zonas"
+      style="z-index: 10; display: none;" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/lucia-icon-64.png" class="persona-lucia persona-map-asset" data-persona="lucia"
+      alt="imagen de lucia" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/sergio-icon-64.png" class="persona-sergio persona-map-asset" data-persona="sergio"
+      alt="imagen de sergio" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/carina-icon-64.png" class="persona-carina persona-map-asset" data-persona="carina"
+      alt="imagen de carina" />
+    <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/marta-icon-64.png" class="persona-marta persona-map-asset" data-persona="marta"
+      alt="imagen de marta" />
+
+
+    <div class="marta-line persona-map-asset" data-persona="marta">
+      <svg class="base" width="44" height="298" viewBox="0 0 44 298" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M41.7412 84.1826L37.832 280.105C41.0079 281.495 43.2275 284.664 43.2275 288.353C43.2275 293.323 39.1981 297.353 34.2275 297.353C29.257 297.353 25.2275 293.323 25.2275 288.353C25.2275 284.583 27.5452 281.356 30.833 280.016L34.7129 85.5215L0 2.70508L6.45508 0L41.7412 84.1826Z"
+          fill="pink" />
+      </svg>
+      <svg class="top" width="44" height="298" viewBox="0 0 44 298" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M41.7412 84.1826L37.832 280.105C41.0079 281.495 43.2275 284.664 43.2275 288.353C43.2275 293.323 39.1981 297.353 34.2275 297.353C29.257 297.353 25.2275 293.323 25.2275 288.353C25.2275 284.583 27.5452 281.356 30.833 280.016L34.7129 85.5215L0 2.70508L6.45508 0L41.7412 84.1826Z"
+          fill="red" />
+      </svg>
+    </div>
+
+    <div class="carina-line persona-map-asset" data-persona="carina">
+      <svg class="base" width="283" height="150" viewBox="0 0 283 150" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M282.072 6.25391L17.9336 139.058C17.9751 139.408 18 139.765 18 140.127C18 145.098 13.9706 149.127 9 149.127C4.02944 149.127 0 145.098 0 140.127C0 135.156 4.02944 131.127 9 131.127C11.0518 131.127 12.9422 131.815 14.4561 132.971L278.928 0L282.072 6.25391Z"
+          fill="#82368C" />
+      </svg>
+      <svg class="top" width="283" height="150" viewBox="0 0 283 150" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M282.072 6.25391L17.9336 139.058C17.9751 139.408 18 139.765 18 140.127C18 145.098 13.9706 149.127 9 149.127C4.02944 149.127 0 145.098 0 140.127C0 135.156 4.02944 131.127 9 131.127C11.0518 131.127 12.9422 131.815 14.4561 132.971L278.928 0L282.072 6.25391Z"
+          fill="trans" />
+      </svg>
+    </div>
+    <div class="sergio-line persona-map-asset" data-persona="sergio">
+      <svg class="base" width="325" height="128" viewBox="0 0 325 128" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M9 0C13.6083 0 17.4042 3.46384 17.9336 7.92969L267.578 79.8125L324.588 122.191L320.412 127.809L264.422 86.1875L15.998 14.6572C14.3481 16.6957 11.8269 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0Z"
+          fill="#002855" />
+      </svg>
+      <svg class="top" width="325" height="128" viewBox="0 0 325 128" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M9 0C13.6083 0 17.4042 3.46384 17.9336 7.92969L267.578 79.8125L324.588 122.191L320.412 127.809L264.422 86.1875L15.998 14.6572C14.3481 16.6957 11.8269 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0Z"
+          fill="white" />
+      </svg>
+    </div>
+    <div class="lucia-line persona-map-asset" data-persona="lucia">
+      <svg class="base" width="233" height="241" viewBox="0 0 233 241" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M9 0C13.9706 0 18 4.02944 18 9C18 9.30992 17.9837 9.61612 17.9531 9.91797C25.4841 14.1951 32.9831 19.9781 39.7939 25.6162C44.5315 29.5381 49.087 33.5202 53.0869 36.9189C57.1512 40.3724 60.6329 43.2156 63.4414 45.0879C65.7571 46.6317 69.9815 47.8601 76.1348 48.9092C82.1594 49.9363 89.3968 50.703 97.4102 51.6494C113.241 53.5192 131.857 56.0563 147.392 62.7881L147.984 63.0498C160.504 68.6596 176.941 81.756 192.221 95.5527C207.859 109.673 222.689 124.904 231.584 134.639L232.947 136.131L199.836 240.558L193.164 238.442L225.051 137.876C216.169 128.253 202.199 113.994 187.529 100.748C172.454 87.1361 157.015 74.9413 145.691 69.6973L144.608 69.2119C130.143 62.9438 112.509 60.4808 96.5898 58.6006C88.7285 57.6721 81.2154 56.8762 74.959 55.8096C68.8312 54.7649 63.2428 53.3683 59.5586 50.9121C56.3672 48.7845 52.5987 45.69 48.5537 42.2529C44.4444 38.7612 40.0307 34.8993 35.3311 31.0088C28.5316 25.3801 21.4443 19.9612 14.5859 16.0537C13.0509 17.2709 11.1112 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0Z"
+          fill="#00F0BE" />
+      </svg>
+      <svg class="top" width="233" height="241" viewBox="0 0 233 241" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M9 0C13.9706 0 18 4.02944 18 9C18 9.30992 17.9837 9.61612 17.9531 9.91797C25.4841 14.1951 32.9831 19.9781 39.7939 25.6162C44.5315 29.5381 49.087 33.5202 53.0869 36.9189C57.1512 40.3724 60.6329 43.2156 63.4414 45.0879C65.7571 46.6317 69.9815 47.8601 76.1348 48.9092C82.1594 49.9363 89.3968 50.703 97.4102 51.6494C113.241 53.5192 131.857 56.0563 147.392 62.7881L147.984 63.0498C160.504 68.6596 176.941 81.756 192.221 95.5527C207.859 109.673 222.689 124.904 231.584 134.639L232.947 136.131L199.836 240.558L193.164 238.442L225.051 137.876C216.169 128.253 202.199 113.994 187.529 100.748C172.454 87.1361 157.015 74.9413 145.691 69.6973L144.608 69.2119C130.143 62.9438 112.509 60.4808 96.5898 58.6006C88.7285 57.6721 81.2154 56.8762 74.959 55.8096C68.8312 54.7649 63.2428 53.3683 59.5586 50.9121C56.3672 48.7845 52.5987 45.69 48.5537 42.2529C44.4444 38.7612 40.0307 34.8993 35.3311 31.0088C28.5316 25.3801 21.4443 19.9612 14.5859 16.0537C13.0509 17.2709 11.1112 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0Z"
+          fill="white" />
+      </svg>
+    </div>
+    <button type="button" class="map-circle-overlay persona-map-asset" data-persona="lucia">
+      <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/lucia-play.png" alt="reproducir video" />
+    </button>
+    <button type="button" class="map-circle-overlay persona-map-asset" data-persona="sergio">
+      <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/sergio-play.png" alt="reproducir video" />
+    </button>
+    <button type="button" class="map-circle-overlay persona-map-asset" data-persona="carina">
+      <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/carina-play.png" alt="reproducir video" />
+    </button>
+    <button type="button" class="map-circle-overlay persona-map-asset" data-persona="marta">
+      <img src="https://www.atopicall.com/wp-content/uploads/sites/1/2025/08/marta-play.png" alt="reproducir video" />
+    </button>
+  </div>
+</div>
+<script src="./script.js"></script>
